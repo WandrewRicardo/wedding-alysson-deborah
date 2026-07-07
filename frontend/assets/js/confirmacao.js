@@ -78,6 +78,10 @@ function submitFormulario(){
         const dados = await response.json()
         
         if (response.ok ) {
+
+            sessionStorage.setItem("nome", nome)
+            sessionStorage.setItem("numero_convite", numero_convite)
+
             const confirmacaoPresenca = await Swal.fire({
                 title: 'Prenseça confirmada!',
                 text: dados.mensagem,
@@ -86,8 +90,10 @@ function submitFormulario(){
                 confirmButtonText: 'Seguir para lista de presentes',
                 confirmButtonColor: '#0f1c33'
             })
+
             if (confirmacaoPresenca.isConfirmed) 
                 window.location.href = '/presentes'
+            
         }else{
             Swal.fire({
                 title: 'Campos Inválidos!',

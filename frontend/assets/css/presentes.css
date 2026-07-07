@@ -256,6 +256,13 @@ html,body {
      border: 1px solid var(--cor0);
     cursor: pointer;
 }
+.btn-reservar.reservado {
+    background-color: #c9c9c9;
+    color: #666;
+    cursor: not-allowed;
+    transform: none;
+    pointer-events: none;
+}
 .icone-coracao {
     font-size: 30px;
 }

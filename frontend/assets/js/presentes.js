@@ -12,13 +12,106 @@ function menuHamburguer() {
         btnClose.classList.remove('active');
     });
 }
-function reservaPresenntes () {
-    const btnReservar = document.querySelector('.btn-reservar')
 
-    btnReservar.addEventListener('click', async (event) => {
-        event.preventDefault();
-    });
+async function listarPresentes() {
+    const response = await fetch('/api/presentes')
+
+    const presentes = await response.json()
+
+    const gridPresentes = document.querySelector('.grid-presentes')
+    gridPresentes.innerHTML = ''
+    
+    presentes.forEach((presente) => {
+
+        const disponiveis = presente.quantidade - presente.reservados
+        const card = document.createElement('article')
+        const actions = document.createElement('div')
+
+        card.classList.add('card-presente')
+        card.innerHTML = `
+            <img src = "assets/img/presentes/${presente.imagem}" alt = "${presente.nome}">
+            <h3>${presente.nome}</h3>
+        `
+        actions.classList.add('card-actions')
+        actions.innerHTML = `
+        <button class="btn-reservar" data-presentes-id="${presente.id}">RESERVAR ESTE</button>
+        <span class="icone-coracao">♡</span>
+        `
+        card.appendChild(actions)
+        const botao = actions.querySelector('.btn-reservar')
+
+        if (disponiveis <= 0) {
+
+            botao.classList.add('reservado')
+            botao.textContent = 'ESGOTADO'
+        }
+
+        gridPresentes.appendChild(card)
+
+    }); 
+    reservaPresentes()
+        
 }
 
-reservaPresenntes();
+async function reservaPresentes () {
+
+    const numero_convite = sessionStorage.getItem("numero_convite")
+
+    const btnReservar = document.querySelectorAll('.btn-reservar')
+
+    btnReservar.forEach((btn) => {
+        btn.addEventListener('click', async (event) => {
+           const presenteId = event.target.dataset.presentesId
+            
+           const objJson = {numero_convite, presenteId}
+           const response = await fetch ("/api/presentes", {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(objJson)
+           })
+
+           const dados = await response.json()
+           console.log(dados)
+           if(response.status === 409) {
+                const confirmacao = await Swal.fire({
+                    title: "Deseja Continuar?",
+                    text: dados.mensagem,
+                    icon: "question",
+                    showCancelButton: true
+                })
+
+                if(!confirmacao.isConfirmed) {
+                    return console.log('cancelado atualização ')
+                }
+
+                const responseconfirm = await fetch ("/api/presentes", {
+                    method: "PUT",
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(objJson)
+
+                })
+                return listarPresentes()
+           }
+           
+
+           if (response.ok) {
+                Swal.fire({
+                    title: "Muito Obrigado",
+                    text: dados.mensagem,
+                    icon: 'success'
+                })
+           }else {
+                Swal.fire({
+                    title: "Erro!",
+                    text: dados.mensagem,
+                    icon: 'error'
+                })
+           }
+           
+        })
+    })
+}
+
 menuHamburguer();
+listarPresentes();
+
