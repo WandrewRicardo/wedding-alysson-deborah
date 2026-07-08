@@ -9,7 +9,7 @@ O projeto foi desenvolvido com o objetivo de consolidar conhecimentos em desenvo
 ## Demonstração
 
 <p align="center">
-  <img src="docs/demo.gif" alt="Demonstração da aplicação" width="900">
+  <img src="docs/demo.gif.gif/" alt="Demonstração da aplicação" width="900">
 </p>
 
 ---
