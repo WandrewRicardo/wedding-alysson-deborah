@@ -34,7 +34,7 @@ Durante o desenvolvimento, cada funcionalidade foi implementada pensando não ap
 
 ### Nossa História
 
-![](docs/historia.png)
+![](docs/nossa-historia.png)
 
 ---
 
