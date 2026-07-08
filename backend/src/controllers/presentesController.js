@@ -1,7 +1,9 @@
 const presentesService = require('../services/presentesService.js')
 
 async function listarPresentes(req, res) {
-   const presentes = await presentesService.listarPresentes()
+    const numero_convite = req.query.numero_convite
+
+    const presentes = await presentesService.listarPresentes(numero_convite)
     return res.status(200).json(presentes)
 }
 

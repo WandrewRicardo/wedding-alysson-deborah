@@ -3,15 +3,23 @@ const pool = require('../db/index.js')
 async function listarPresentes () {
 
     const presentes = await pool.query (`
-        SELECT 
+        SELECT
             presentes.id,
             presentes.nome,
             presentes.imagem,
             presentes.quantidade,
             COUNT(reservas.id) AS reservados
         FROM presentes
+
         LEFT JOIN reservas
         ON presentes.id = reservas.presente_id
+
+        LEFT JOIN confirmacoes
+        ON reservas.confirmacao_id = confirmacoes.id
+
+        LEFT JOIN convites
+        ON confirmacoes.convite_id = convites.id
+
         GROUP BY
             presentes.id,
             presentes.nome,
@@ -79,6 +87,25 @@ async function atualizarPresente(numero_convite, presenteId) {
 
 }
 
+async function buscarMinhaReserva(numero_convite) {
+    
+    const reserva = await pool.query(`
+        SELECT reservas.presente_id
+        FROM reservas
+
+        JOIN confirmacoes
+        ON reservas.confirmacao_id = confirmacoes.id
+
+        JOIN convites
+        ON confirmacoes.convite_id = convites.id
+
+        WHERE convites.numero_convite = $1
+        `, [numero_convite]
+    )
+
+    return reserva.rows[0]
+}
+
 module.exports = {
-    listarPresentes, buscarPresente, buscarConfirmacao, buscarReserva, adicionarReserva, atualizarPresente
+    listarPresentes, buscarPresente, buscarConfirmacao, buscarReserva, adicionarReserva, atualizarPresente, buscarMinhaReserva
 }

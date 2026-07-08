@@ -263,6 +263,13 @@ html,body {
     transform: none;
     pointer-events: none;
 }
+.btn-reservar.minha-reserva {
+    background-color: var(--cor2);
+    color: #ffffff;
+    cursor: not-allowed;
+    transform: none;
+    pointer-events: none;
+}
 .icone-coracao {
     font-size: 30px;
 }

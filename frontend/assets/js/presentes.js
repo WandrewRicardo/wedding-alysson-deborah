@@ -14,11 +14,14 @@ function menuHamburguer() {
 }
 
 async function listarPresentes() {
-    const response = await fetch('/api/presentes')
+    const numero_convite = sessionStorage.getItem("numero_convite")
+
+    const response = await fetch(`/api/presentes?numero_convite=${numero_convite}`)
 
     const presentes = await response.json()
 
     const gridPresentes = document.querySelector('.grid-presentes')
+
     gridPresentes.innerHTML = ''
     
     presentes.forEach((presente) => {
@@ -40,7 +43,12 @@ async function listarPresentes() {
         card.appendChild(actions)
         const botao = actions.querySelector('.btn-reservar')
 
-        if (disponiveis <= 0) {
+        if(presente.minhaReserva === true) {
+            botao.classList.add('minha-reserva')
+            botao.textContent = 'RESERVADO'
+        }
+
+        else if (disponiveis <= 0) {
 
             botao.classList.add('reservado')
             botao.textContent = 'ESGOTADO'
@@ -84,7 +92,7 @@ async function reservaPresentes () {
                     return console.log('cancelado atualização ')
                 }
 
-                const responseconfirm = await fetch ("/api/presentes", {
+                await fetch ("/api/presentes", {
                     method: "PUT",
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(objJson)
@@ -100,6 +108,8 @@ async function reservaPresentes () {
                     text: dados.mensagem,
                     icon: 'success'
                 })
+                listarPresentes()
+
            }else {
                 Swal.fire({
                     title: "Erro!",

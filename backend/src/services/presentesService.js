@@ -1,10 +1,24 @@
 const presentesRepository = require('../repositories/presentesRepository.js')
 
-async function listarPresentes () {
-    try {
+async function listarPresentes (numero_convite) {
+    try { 
+
         const presentes = await presentesRepository.listarPresentes()
+
+        const minhaReserva = await presentesRepository.buscarMinhaReserva(numero_convite)
+        
+       presentes.forEach((presente) => {
+
+        if (minhaReserva && presente.id === minhaReserva.presente_id) {
+            presente.minhaReserva = true
+
+        }else {
+            presente.minhaReserva = false
+        }    
+       })
         return presentes;
     }
+    
     catch (error) {
         return {
         status: 500,
